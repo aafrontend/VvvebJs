@@ -280,60 +280,16 @@ Vvveb.Components.extend("_base", "_base", {
 		sort: base_sort++,
 		section: style_section,
 		data: {header:"Typography"},
-    }, {
-        name: "Font family",
-        key: "font-family",
+ 
+	}, {
+        name: "Font size",
+        key: "font-size",
 		htmlAttr: "style",
         sort: base_sort++,
 		section: style_section,
         col:6,
 		inline:true,
-        inputtype: SelectInput,
-        data: {
-			options: [{
-				value: "",
-				text: "Default"
-			}, {
-				value: "Arial, Helvetica, sans-serif",
-				text: "Arial"
-			}, {
-				value: 'Lucida Sans Unicode", "Lucida Grande", sans-serif',
-				text: 'Lucida Grande'
-			}, {
-				value: 'Palatino Linotype", "Book Antiqua", Palatino, serif',
-				text: 'Palatino Linotype'
-			}, {
-				value: '"Times New Roman", Times, serif',
-				text: 'Times New Roman'
-			}, {
-				value: "Georgia, serif",
-				text: "Georgia, serif"
-			}, {
-				value: "Tahoma, Geneva, sans-serif",
-				text: "Tahoma"
-			}, {
-				value: 'Comic Sans MS, cursive, sans-serif',
-				text: 'Comic Sans'
-			}, {
-				value: 'Verdana, Geneva, sans-serif',
-				text: 'Verdana'
-			}, {
-				value: 'Impact, Charcoal, sans-serif',
-				text: 'Impact'
-			}, {
-				value: 'Arial Black, Gadget, sans-serif',
-				text: 'Arial Black'
-			}, {
-				value: 'Trebuchet MS, Helvetica, sans-serif',
-				text: 'Trebuchet'
-			}, {
-				value: 'Courier New", Courier, monospace',
-				text: 'Courier New", Courier, monospace'
-			}, {
-				value: 'Brush Script MT, sans-serif',
-				text: 'Brush Script'
-			}]
-		}
+        inputtype: CssUnitInput
 	}, {
         name: "Font weight",
         key: "font-weight",
@@ -345,7 +301,7 @@ Vvveb.Components.extend("_base", "_base", {
         inputtype: SelectInput,
         data: {
 			options: [{
-				value: "",
+				value: "normal",
 				text: "Default"
 			}, {	
 				value: "100",
@@ -375,6 +331,60 @@ Vvveb.Components.extend("_base", "_base", {
 				value: "900",
 				text: "Ultra-Bold"
 			}],
+		}
+   }, {
+        name: "Font family",
+        key: "font-family",
+		htmlAttr: "style",
+        sort: base_sort++,
+		section: style_section,
+        col:12,
+		inline:true,
+        inputtype: SelectInput,
+        data: {
+			options: [{
+				value: "",
+				text: "Default"
+			}, {
+				value: "Arial, Helvetica, sans-serif",
+				text: "Arial"
+			}, {
+				value: '\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif',
+				text: 'Lucida Grande'
+			}, {
+				value: '\'Palatino Linotype\', \'Book Antiqua\', Palatino, serif',
+				text: 'Palatino Linotype'
+			}, {
+				value: '\'Times New Roman\', Times, serif',
+				text: 'Times New Roman'
+			}, {
+				value: "Georgia, serif",
+				text: "Georgia, serif"
+			}, {
+				value: "Tahoma, Geneva, sans-serif",
+				text: "Tahoma"
+			}, {
+				value: '\'Comic Sans MS\', cursive, sans-serif',
+				text: 'Comic Sans'
+			}, {
+				value: 'Verdana, Geneva, sans-serif',
+				text: 'Verdana'
+			}, {
+				value: 'Impact, Charcoal, sans-serif',
+				text: 'Impact'
+			}, {
+				value: '\'Arial Black\', Gadget, sans-serif',
+				text: 'Arial Black'
+			}, {
+				value: '\'Trebuchet MS\', Helvetica, sans-serif',
+				text: 'Trebuchet'
+			}, {
+				value: '\'Courier New\', Courier, monospace',
+				text: 'Courier New'
+			}, {
+				value: '\'Brush Script MT\', sans-serif',
+				text: 'Brush Script'
+			}]
 		}
 	}, {
         name: "Text align",
@@ -1170,7 +1180,7 @@ Vvveb.Components.extend("_base", "html/button", {
         validValues: ["disabled"],
         data: {
             on: "disabled",
-            off: ""
+            off: null
         }
     }]
 });
@@ -1659,8 +1669,9 @@ Vvveb.Components.extend("_base", "html/form", {
 });
 
 Vvveb.Components.extend("_base", "html/textinput", {
-    name: "Text Input",
-	attributes: {"type":"text"},
+    name: "Input",
+	nodes: ["input"],
+	//attributes: {"type":"text"},
     image: "icons/text_input.svg",
     html: '<div class="form-group"><label>Text</label><input type="text" class="form-control"></div></div>',
     properties: [{
@@ -1669,11 +1680,121 @@ Vvveb.Components.extend("_base", "html/textinput", {
         htmlAttr: "value",
         inputtype: TextInput
     }, {
+        name: "Type",
+        key: "type",
+        htmlAttr: "type",
+		inputtype: SelectInput,
+        data: {
+            options: [{
+                value: "text",
+                text: "text"
+            }, {
+                value: "button",
+                text: "button"
+            }, {
+
+                value: "checkbox",
+                text: "checkbox"
+            }, {
+
+                value: "color",
+                text: "color"
+            }, {
+
+                value: "date",
+                text: "date"
+            }, {
+
+                value: "datetime-local",
+                text: "datetime-local"
+            }, {
+
+                value: "email",
+                text: "email"
+            }, {
+
+                value: "file",
+                text: "file"
+            }, {
+
+                value: "hidden",
+                text: "hidden"
+            }, {
+
+                value: "image",
+                text: "image"
+            }, {
+
+                value: "month",
+                text: "month"
+            }, {
+
+                value: "number",
+                text: "number"
+            }, {
+
+                value: "password",
+                text: "password"
+            }, {
+
+                value: "radio",
+                text: "radio"
+            }, {
+
+                value: "range",
+                text: "range"
+            }, {
+
+                value: "reset",
+                text: "reset"
+            }, {
+
+                value: "search",
+                text: "search"
+            }, {
+
+                value: "submit",
+                text: "submit"
+            }, {
+
+                value: "tel",
+                text: "tel"
+            }, {
+
+                value: "text",
+                text: "text"
+            }, {
+
+                value: "time",
+                text: "time"
+            }, {
+
+                value: "url",
+                text: "url"
+            }, {
+
+                value: "week",
+                text: "week"
+            }]
+        }
+    }, {
         name: "Placeholder",
         key: "placeholder",
         htmlAttr: "placeholder",
         inputtype: TextInput
-    }]
+    }, {
+        name: "Disabled",
+        key: "disabled",
+        htmlAttr: "disabled",
+		col:6,
+        inputtype: CheckboxInput,
+	},{
+        name: "Required",
+        key: "required",
+        htmlAttr: "required",
+		col:6,
+        inputtype: CheckboxInput,
+	}]
 });
 
 Vvveb.Components.extend("_base", "html/selectinput", {
@@ -2301,12 +2422,16 @@ Vvveb.Components.extend("_base", "html/button", {
         name: "Autofocus",
         key: "autofocus",
         htmlAttr: "autofocus",
-        inputtype: CheckboxInput
+        inputtype: CheckboxInput,
+		inline:true,
+        col:6,
    	},{
         name: "Disabled",
         key: "disabled",
         htmlAttr: "disabled",
-        inputtype: CheckboxInput
+        inputtype: CheckboxInput,		
+		inline:true,
+        col:6,
     }]
 });   
 
