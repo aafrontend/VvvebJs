@@ -66,7 +66,7 @@ Vvveb.Undo = {
 			this.undoIndex++;
 		*/
 		Vvveb.Builder.frameBody.trigger("vvveb.undo.add");
-		this.mutations.splice(++this.undoIndex, 0, mutation);
+		this.mutations.splice(++this.undoIndex, this.mutations.length - this.undoIndex, mutation);
 	 },
 
 	restore : function(mutation, undo) {	
@@ -123,6 +123,9 @@ Vvveb.Undo = {
 			break;
 			case 'characterData':
 			  mutation.target.innerHTML = undo ? mutation.oldValue : mutation.newValue;
+			  break;
+			case 'style':
+			  $("#vvvebjs-styles", window.FrameDocument).html( undo ? mutation.oldValue : mutation.newValue );
 			  break;
 			case 'attributes':
 			  value = undo ? mutation.oldValue : mutation.newValue;

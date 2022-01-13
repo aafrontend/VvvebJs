@@ -1,19 +1,23 @@
 /* CSS Tree menu styles */
 .tree
 {
+	width:100%;
+
 	ol
 	{
 		padding: 0.3rem 0 0 2rem;
-		width: 300px;
-		width: $builder-right-panel-width + 15;
+		margin:0;
+		//width: 300px;
+		min-width: $builder-right-panel-width + 15;
 		font-size:12px;
+		font-weight:500;
 		color:#555;
 
 		li 
 		{ 
 			position: relative; 
 			margin-left: -15px;
-			margin-bottom: 0.1rem;
+			margin-bottom: 0.3rem;
 			list-style: none;
 			color:#555;
 			overflow:hidden;
@@ -30,7 +34,7 @@
 				> label > span, > a > span  
 				{
 					color:#007bff;
-					//font-weight:600;
+					//font-weight:500;
 				}
 			}
 		}
@@ -39,13 +43,15 @@
 		{
 			> label
 			{
-				background: url(../libs/builder/icons/file.svg) 12px 0px no-repeat;
-				background-size:19px 18px;
+				background: url(../libs/builder/icons/file.svg) 24px 0px no-repeat;
+				background-size:21px 21px;
 				cursor: pointer;
 				display: block;
-				padding-left: 35px;
-				margin:0px;
+				padding-left: 56px;
+				margin:0;
 				font-size:12px;
+				font-weight:500;
+				line-height:28px;
 
 
 				&:hover
@@ -59,7 +65,7 @@
 		{
 			> label
 			{
-				padding-left:38px;
+				//padding-left:38px;
 			}
 		}
 
@@ -77,14 +83,11 @@
 			
 			 + ol
 			{
-				background: url(../img/toggle-small-expand.png) 40px 0 no-repeat;
-				background: url(../libs/builder/icons/plus_round.svg) 40px 0px no-repeat;
-				background: url(../libs/builder/icons/arrow-down.svg) 42px 2px no-repeat;
+				background: url(../libs/builder/icons/arrow-right.svg) 5px .3rem no-repeat;
 				background-size:10px 10px;
-				
-				margin: -1.1em 0 0 -44px; /* 15px */
-				padding:0.7rem 0rem;
-				height: 0em;
+				margin: -1.8rem 0 0 0rem;
+				padding: 2rem 0 0 2rem;
+				height: 0;
 				
 				> li { display: none; margin-left: -14px !important; padding-left: 1px; }
 			}
@@ -92,28 +95,27 @@
 		
 		li label
 		{
-			background: url(../libs/builder/icons/folder.svg) 15px 1px no-repeat;
-			background-size:18px 18px;
+			background: url(../libs/builder/icons/folder.svg) 24px 1px no-repeat;
+			background-size:24px 24px;
 			cursor: pointer;
 			display: block;
-			padding-left: 35px;
+			padding-left: 56px;
 			margin:0px;
 			font-size:12px;
+			font-weight:500;
+			line-height:28px;
 		}
 
 		li input:checked + ol
 		{
-			background: url(../img/toggle-small.png) 40px 5px no-repeat;
-			background: url(../libs/builder/icons/minus_round.svg) 40px 5px no-repeat;
-			background: url(../libs/builder/icons/arrow-right.svg) 54px 0px no-repeat;
+			background: url(../libs/builder/icons/arrow-down.svg) 5px .1rem no-repeat;
 			background-size:10px 10px;
-			margin: -1.65em 0 0 -44px; /* 20px */
-			margin: -1.1em 0 0 -55px; /* 20px */
-			padding: 2.1em 0 0 80px;
+			margin: -1.8em 0 0 0rem;
+			padding: 2rem 0 0 2rem;
 			height: auto;
 
-			> li { display: block; margin: 0 0 0.125em;  /* 2px */}
-			> li:last-child { margin: 0 0 0.063em; /* 1px */ }
+			> li { display: block; margin: 0 0 0.5em;  /* 2px */}
+			> li:last-child { margin: 0 0 0.7em; /* 1px */ }
 		}
 	}
 }
