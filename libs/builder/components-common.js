@@ -16,7 +16,7 @@ limitations under the License.
 https://github.com/givanz/Vvvebjs
 */
 
-bgcolorClasses = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-light", "bg-dark", "bg-white"]
+bgcolorClasses = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info", "bg-body-secondary", "bg-dark", "bg-white"]
 
 bgcolorSelectOptions = 
 [{
@@ -42,7 +42,7 @@ bgcolorSelectOptions =
 	value: "bg-info",
 	text: "Info"
 }, {
-	value: "bg-light",
+	value: "bg-body-secondary",
 	text: "Light"
 }, {
 	value: "bg-dark",
@@ -70,6 +70,7 @@ function changeNodeName(node, newNodeName)
 
 var base_sort = 100;//start sorting for base component from 100 to allow extended properties to be first
 var style_section = 'style';
+var advanced_section = 'advanced';
 
 Vvveb.Components.add("_base", {
     name: "Element",
@@ -110,7 +111,9 @@ Vvveb.Components.extend("_base", "_base", {
 		section: style_section,
         data: {header:"Display"},
      }, {
-	key: "linked_styles_check",
+		//linked styles notice message
+		name:"",
+		key: "linked_styles_check",
         sort: base_sort++,
         section: style_section,
         inline:false,
@@ -408,49 +411,7 @@ var ComponentBaseTypography = {
 		inline:false,
         inputtype: SelectInput,
         data: {
-			options: [{
-				value: "",
-				text: "Default"
-			}, {
-				value: "Arial, Helvetica, sans-serif",
-				text: "Arial"
-			}, {
-				value: '\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif',
-				text: 'Lucida Grande'
-			}, {
-				value: '\'Palatino Linotype\', \'Book Antiqua\', Palatino, serif',
-				text: 'Palatino Linotype'
-			}, {
-				value: '\'Times New Roman\', Times, serif',
-				text: 'Times New Roman'
-			}, {
-				value: "Georgia, serif",
-				text: "Georgia, serif"
-			}, {
-				value: "Tahoma, Geneva, sans-serif",
-				text: "Tahoma"
-			}, {
-				value: '\'Comic Sans MS\', cursive, sans-serif',
-				text: 'Comic Sans'
-			}, {
-				value: 'Verdana, Geneva, sans-serif',
-				text: 'Verdana'
-			}, {
-				value: 'Impact, Charcoal, sans-serif',
-				text: 'Impact'
-			}, {
-				value: '\'Arial Black\', Gadget, sans-serif',
-				text: 'Arial Black'
-			}, {
-				value: '\'Trebuchet MS\', Helvetica, sans-serif',
-				text: 'Trebuchet'
-			}, {
-				value: '\'Courier New\', Courier, monospace',
-				text: 'Courier New'
-			}, {
-				value: '\'Brush Script MT\', sans-serif',
-				text: 'Brush Script'
-			}]
+			options: fontList
 		}
 	}, {
         name: "Text align",
@@ -892,7 +853,7 @@ Vvveb.Components.extend("_base", "_base", {
         inputtype: ImageInput,
         
         init: function(node) {
-			var image = $(node).css("background-image").replace(/^url\(['"]?(.+)['"]?\)/, '$1');
+			var image = $(node).css("background-image").replace(/url\(['"]?([^"\)$]+?)['"]?\).*/, '$1');
 			return image;
         },
 
@@ -994,28 +955,173 @@ Vvveb.Components.extend("_base", "_base", {
 		}
     }]
 });    
+ 
 
-/*
-
-Vvveb.Components.extend("_base", "_base", {
-	 properties: [
-	 {
-        name: "Font family",
-        key: "font-family",
-		htmlAttr: "style",
-        sort: base_sort++,
-        col:12,
-		inline:false,
-        inputtype: SelectInput,
+//Device visibility
+var ComponentDeviceVisibility = {
+	 properties: [{
+		key: "visibility_header",
+		inputtype: SectionInput,
+		name:false,
+		sort: base_sort++,
+		section: advanced_section,
+		data: {header:"Hide based on device screen width"},
+	}, {
+        name: "Extra small devices",
+        key: "hidexs",
+        col:6,
+		inline:true,
+		sort: base_sort++,
+		section: advanced_section,
+        htmlAttr: "class",
+        validValues: ["d-xs-none"],
+        inputtype: ToggleInput,
         data: {
-			options: [{
-				value: "",
-				text: "extended"
-			}, {
-				value: "Ggoogle ",
-				text: "google"
-			}]
+            on: "d-xs-none",
+            off: ""
+        }
+	}, {
+        name: "Small devices",
+        key: "hidesm",
+        col:6,
+		inline:true,
+		sort: base_sort++,
+		section: advanced_section,
+        htmlAttr: "class",
+        validValues: ["d-sm-none"],
+        inputtype: ToggleInput,
+        data: {
+            on: "d-sm-none",
+            off: ""
+        }
+	}, {
+        name: "Medium devices",
+        key: "hidemd",
+        col:6,
+		inline:true,
+		sort: base_sort++,
+		section: advanced_section,
+        htmlAttr: "class",
+        validValues: ["d-md-none"],
+        inputtype: ToggleInput,
+        data: {
+            on: "d-md-none",
+            off: ""
+        }
+	}, {
+        name: "Large devices",
+        key: "hidelg",
+        col:6,
+		inline:true,
+		sort: base_sort++,
+		section: advanced_section,
+        htmlAttr: "class",
+        validValues: ["d-lg-none"],
+        inputtype: ToggleInput,
+        data: {
+            on: "d-lg-none",
+            off: ""
+        }
+	}, {
+        name: "Xl devices",
+        key: "hidexl",
+        col:6,
+		inline:true,
+		sort: base_sort++,
+		section: advanced_section,
+        htmlAttr: "class",
+        validValues: ["d-xl-none"],
+        inputtype: ToggleInput,
+        data: {
+            on: "d-xl-none",
+            off: ""
+        }
+	}, {
+        name: "Xxl devices",
+        key: "hidexxl",
+        col:6,
+		inline:true,
+		sort: base_sort++,
+		section: advanced_section,
+        htmlAttr: "class",
+        validValues: ["d-xxl-none"],
+        inputtype: ToggleInput,
+        data: {
+            on: "d-xxl-none",
+            off: ""
+        }
+    }]
+};
+
+Vvveb.Components.extend("_base", "_base", ComponentDeviceVisibility);
+
+
+Vvveb.Components.add("config/bootstrap", {
+    name: "Bootstrap Variables",
+	beforeInit: function (node) {
+		properties = [];
+		var i = 0;
+		var j = 0;
+
+		let cssVars = Vvveb.ColorPaletteManager.getAllCSSVariableNames(window.FrameDocument.styleSheets/*, ":root"*/);
+		
+		for (type in cssVars) {
+			properties.push({
+				key: "cssVars" + type,
+				inputtype: SectionInput,
+				name:type,
+				sort: base_sort++,
+				data: {header:type[0].toUpperCase() + type.slice(1)},
+			});
+			
+			for (selector in cssVars[type]) {
+				
+				let friendlyName = selector.replaceAll(/--bs-/g,"").replaceAll("-", " ").trim();  
+				friendlyName = friendlyName[0].toUpperCase() + friendlyName.slice(1);
+
+				let value = cssVars[type][selector];
+				let input;
+				
+				data = {selector, type:value.type, step:"any"};
+				
+				if (value.type == "color") {
+					input = ColorInput;
+				} else if (value.type == "font") {
+					input = SelectInput;
+					data.options = fontList;
+				} else if (value.type == "dimensions") {
+					input = CssUnitInput;
+				}
+
+				i++;
+				properties.push({
+					name: friendlyName,
+					key: "cssvar" + i,
+					defaultValue: value.value,
+					//index: i - 1,
+					columnNode: this,
+					col:(value.type == "font" || value.type == "dimensions") ? 12 : 4,
+					inline:true,
+					section: advanced_section,
+					inputtype: input,
+					data: data,
+					onChange: function(node, value, input) {
+						
+						if (this.data.type == "font") {
+							let option = input.options[input.selectedIndex];
+							Vvveb.FontsManager.addFont(option.dataset.provider, value, node[0]);
+						}
+
+						Vvveb.StyleManager.setStyle(":root", this.data.selector, value);
+						
+						return node;
+					},	
+				});
+			}
 		}
-	}]
+		
+		this.properties = properties;
+		return node;
+	},
+	properties: [],
 });
-*/

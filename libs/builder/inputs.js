@@ -149,13 +149,98 @@ var IconSelectInput = $.extend({}, Input, {
   }
 );
 
+var HtmlListSelectInput = $.extend({}, Input, {
+	
+	data:{},
+	cache:{},
+	
+    events: [
+        //["click", "onChange", "li"],
+        ["change", "onListChange", "select"],
+        ["keyup", "searchElement", "input.search"],
+        ["click", "clearSearch", "button.clear-backspace"],
+	 ],
+	
+	clearSearch : function(event) {
+		let element = event.data.element;
+		$("input.search", element).val("").keyup();
+	},
+
+
+	searchElement : function(event) {
+		let element = event.data.element;
+		searchText = this.value;
+		
+		delay(() => {
+			
+			$("li", element).hide().each(function () {
+				$this = $(this);
+				if (this.title.indexOf(searchText) > -1) $this.show();
+			});
+			
+		}, 500);
+	},	
+
+	onElementClick: function(event) {
+		let data = event.data.input.data;
+		let svg = $(data.insertElement, this);
+		let value = svg.get(0).outerHTML;
+		event.data.element.trigger('propertyChange', [value, this]);
+	},
+	
+	onListChange: function(event) {
+		let input = event.data.input;
+		let element = event.data.element;
+		let url = input.data.url.replace('{value}', this.value);
+		
+		$(".elements", element).html(`<div class="p-4"><div class="spinner-border spinner-border-sm" role="status">
+		  <span class="visually-hidden">Loading...</span>
+		</div> Loading...</div>`);
+		//cache ajax requests
+		if (input.cache[url] != undefined) {
+			$(".elements", element).html(input.cache[url]);
+		} else {
+			//$(".elements", element).load(url);
+			$.ajax({
+				url: url,
+				cache: true,
+				dataType: "html",
+				success: function(data) {
+					input.cache[url] = data;
+					$(".elements", element).html(data);
+				}
+			});
+		}
+	},
+	
+	setValue: function(value) {
+		$('select', this.element).val(value);
+	},
+	
+	init: function(data) {
+		this.data = data;
+		this.events.push(["click", "onElementClick", data.clickElement]);
+		let template = this.render("html-list-select", data);
+		//load first set
+		$("select", template).change();
+		return template;
+	},
+	
+  }
+);
+
 
 var LinkInput = $.extend({}, TextInput, {
 
     events: [
         ["change", "onChange", "input"],
 	 ],
-	
+	/*
+	setValue: function(value) {
+		//value = value.replace(/(?<!\/)www\./, 'https://www.');
+		$('input', this.element).val(value);
+	},
+	*/
 	init: function(data) {
 		return this.render("textinput", data);
 	},
@@ -220,26 +305,26 @@ var CssUnitInput = $.extend({}, Input, {
 
     events: [
         ["change", "onChange", "select"],
-        ["change keyup mouseup", "onChange", "input"],
+        ["change keyup", "onChange", "input"],
 	 ],
 		
 	onChange: function(event) {
-		
 		if (event.data && event.data.element)
 		{
+			let number = $("input", event.data.element).val();
+			let unit = $("select", event.data.element).val();
 			input = event.data.input;
 			if (this.value != "") input[this.name] = this.value;// this.name = unit or number	
-			if (input['unit'] == "") input['unit'] = "px";//if unit is not set use default px
-			
-			var value = "";	
-			if (input.unit == "auto")  {
+			if (unit == "") unit = "px";//if unit is not set use default px
+		
+			let value = "";	
+			if (unit == "auto")  {
 				$(event.data.element).addClass("auto"); 
-				value = input.unit;
+				value = unit;
 			}
-			else 
-			{
+			else  {
 				$(event.data.element).removeClass("auto"); 
-				value = input.number + input.unit;
+				value = number + (unit ? unit : "");
 			}
 			
 			event.data.element.trigger('propertyChange', [value, this]);
@@ -247,8 +332,8 @@ var CssUnitInput = $.extend({}, Input, {
 	},
 	
 	setValue: function(value) {
-		this.number = parseInt(value);
-		this.unit = value.replace(this.number, '');
+		this.number = parseFloat(value);
+		this.unit = value.replace(this.number, '').trim();
 		
 		if (this.unit == "auto") $(this.element).addClass("auto");
 
@@ -265,16 +350,20 @@ var CssUnitInput = $.extend({}, Input, {
 var ColorInput = $.extend({}, Input, {
 
 	 //html5 color input only supports setting values as hex colors even if the picker returns only rgb
-	 rgb2hex: function(rgb) {
-		 
-		 if (rgb) {
-			 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+	 rgb2hex: function(value) {
+		 if (value) {
+			 value = value.trim();
 			 
-			 return (rgb && rgb.length === 4) ? "#" +
-			  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-			  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-			  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : rgb;
-		 }
+			 if (rgb = value.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i)) {
+				 
+				 return (rgb && rgb.length === 4) ? "#" +
+				  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+				  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+				  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : rgb;
+			 }
+		}
+		 
+		 return value;
 	},
 
     events: [
@@ -407,6 +496,14 @@ var ToggleInput = $.extend({}, TextInput, {
 		}
 	},
 
+	setValue: function(value) {
+		if (value == $('input', this.element).attr("data-value-on")) {
+			$('input', this.element).attr("checked", true);
+		} else {
+			$('input', this.element).attr("checked", false);
+		}
+	},
+	
     events: [
         ["change", "onChange", "input"],
 	 ],
@@ -465,6 +562,8 @@ var GridInput = $.extend({}, Input, {
 
 	setValue: function(value) {
 		$('select', this.element).val(value);
+		//fix selected attribute not working bug
+		$('select option[selected]', this.element).prop( 'selected', 'selected' );
 	},
 	
 	init: function(data) {
@@ -482,6 +581,10 @@ var TextValueInput = $.extend({}, Input, {
 	    ["click", "onChange", "button" /*'select'*/],
 	 ],
 	
+	setValue: function(value) {
+		return false;
+	},
+		
 	init: function(data) {
 		return this.render("textvalue", data);
 	},

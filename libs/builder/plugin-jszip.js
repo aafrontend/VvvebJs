@@ -1,3 +1,21 @@
+/*
+Copyright 2017 Ziadin Givan
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+https://github.com/givanz/Vvvebjs
+*/
+
 Vvveb.Gui.download =
 function () {
     let assets = [];
@@ -34,7 +52,12 @@ function () {
         let binary = asset.binary;
         
         let filename = href.substring(href.lastIndexOf('/')+1);
-        
+        let path = href.substring(0, href.lastIndexOf('/')).replace(/\.\.\//g, "");
+        if (href.indexOf("://") > 0) {
+			//ignore path for external assets
+			path = "";
+		}
+
         promises.push(new Promise((resolve, reject) => {
 
           let request = new XMLHttpRequest();
@@ -47,9 +70,11 @@ function () {
 
           request.onload = function() {
             if (request.status === 200) {
-              resolve({url, href, filename, binary, data:request.response});
+              resolve({url, href, filename, path, binary, data:request.response, status:request.status});
             } else {
-              reject(Error('Error code:' + request.statusText));
+              //reject(Error('Error code:' + request.statusText));
+              console.error('Error code:' + request.statusText);
+              resolve({status:request.status});
             }
           };
 
@@ -58,7 +83,11 @@ function () {
           };
 
           // Send the request
-          request.send();          
+          try {
+			request.send();          
+		 } catch (error) {
+			  console.error(error);
+		 }
         /*  
         $.ajax({
           url: url,
@@ -80,14 +109,27 @@ function () {
         
         for (i in data) {
             let file = data[i];
-            html = html.replace(file.href, file.filename);
-            zip.file(file.filename, file.data, {base64: file.binary});
+            let folder = zip;
+            
+            if (file.status == 200) {
+				if (file.path) {
+					file.path = file.path.replace(/^\//, "");
+					folder = zip.folder(file.path);
+				} else {
+					folder = zip;
+				}
+				
+				let url =  (file.path ? file.path + "/" : "") + file.filename.trim().replace(/^\//, "");
+				html = html.replace(file.href, url);
+								
+				folder.file(file.filename, file.data, {base64: file.binary});
+			}
         }
         
         zip.file("index.html", html);
         zip.generateAsync({type:"blob"})
         .then(function(content) {
-            saveAs(content, "template.zip");
+            saveAs(content, Vvveb.FileManager.getCurrentPage());
         });
     }).catch((error) => {
         console.log(error)
